@@ -23,6 +23,7 @@ env:
   ARTIFACTS_FOLDER: ./_artifacts
   TESTS_FOLDER: ./_tests
   BUILD_SOURCEBRANCHNAME: ${{ github.head_ref || github.ref_name }}
+  DATE: ""
 
 jobs:
   build:
@@ -125,7 +126,6 @@ jobs:
             type=raw,value=hardcover-v${{ env.READARR_VERSION }}.${{ github.run_number }}
 
       - uses: docker/login-action@v3
-        if: ${{ github.event_name == 'push' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -136,7 +136,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           platforms: "linux/amd64,linux/arm64"
-          push: ${{ github.event_name == 'push' }}
+          push: true
           tags: ${{ steps.gr_meta.outputs.tags }}
           labels: ${{ steps.gr_meta.outputs.labels }}
           build-args: |
@@ -149,7 +149,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           platforms: "linux/amd64,linux/arm64"
-          push: ${{ github.event_name == 'push' }}
+          push: true
           tags: ${{ steps.hc_meta.outputs.tags }}
           labels: ${{ steps.hc_meta.outputs.labels }}
           build-args: |
